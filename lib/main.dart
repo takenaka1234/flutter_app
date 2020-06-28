@@ -13,8 +13,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
         //visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // ヘッダー表示
-      home: FirstPage(),
+
+      //home: FirstPage(),  // homeかinitialRoute & routes どちらかのみ
+      initialRoute: '/',
+      routes: {
+        '/': (context) => FirstPage(),
+        '/second': (context) => SecondPage('second'),
+      },
     );
   }
 }
@@ -25,13 +30,16 @@ class FirstPage extends StatelessWidget {
       appBar: AppBar(title: const Text('First Page')),
       body: Center(
         child: RaisedButton(
+          // push先からの戻り時に値を受け取るための非同期処理
           onPressed: () {
-            Navigator.push(
+            // push(context, Route)で遷移先を指定
+            // pushName(context, Route, arguments)で遷移先を指定(NamedRoute)
+            Navigator.pushNamed(
                 context,
-                MaterialPageRoute(builder: (context) {
-                  return SecondPage();
-                }),
+                '/second',
+                arguments: 'Hello Second!'
             );
+            print('test'); // コンソール出力
           },
           child: Text('Next Page'),
         ),
@@ -41,16 +49,25 @@ class FirstPage extends StatelessWidget {
 }
 
 class SecondPage extends StatelessWidget {
+  final String messageFromFirst;
+  // コンストラクタ
+  SecondPage(this.messageFromFirst);
+
   Widget build(BuildContext context) {
+    // NamedRoutesから値を受け取る
+    final messageFromFirst = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Second Page')),
       body: Center(
-        child: RaisedButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          child: Text('Go back'),
-        ),
+        child:
+          RaisedButton(
+            onPressed: (){
+              // pop(context)でpush元の画面に戻る
+              Navigator.pop<String>(context, 'Back To First');
+            },
+            child: Text(messageFromFirst),
+          ),
       )
     );
   }
