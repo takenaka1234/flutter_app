@@ -24,6 +24,16 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # ---プラグイン---
+  # 端末内ファイルアクセス
+  path_provider:
+
+  # 動画再生
+  video_player:
+
+  # ファイルダウンロード
+  flutter_downloader:
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -32,7 +42,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
