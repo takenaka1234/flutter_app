@@ -26,7 +26,7 @@ class FileController {
 
   static Future loadLocalMovie() async {
     final path = await localPath;
-    final moviePath = '$path/hts-samp009.mp4';
+    final moviePath = '$path/movie.mp4';
     return File(moviePath);
   }
 }

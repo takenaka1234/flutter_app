@@ -1,13 +1,18 @@
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 /*
  * 動画ウィジェット
  */
 class MoviePlayerWidget extends StatefulWidget {
 
+  PlayType playType;
   String movieURL; // 動画URL
-  MoviePlayerWidget(this.movieURL) : super();
+  MoviePlayerWidget(this.playType, this.movieURL) : super();
 
   @override
   _MoviePlayerWidgetState createState() => _MoviePlayerWidgetState();
@@ -25,15 +30,28 @@ class _MoviePlayerWidgetState extends State<MoviePlayerWidget> {
 
   @override
   void initState() {
-
+    final fileName = widget.movieURL.split("/").removeLast();
     // 動画プレーヤーの初期化
-    _controller = VideoPlayerController.network(
-        widget.movieURL
-    )..initialize().then((_) {
-
-      setState(() {});
-      _controller.play();
-    });
+    if(widget.playType == PlayType.Web){
+      _controller = VideoPlayerController.network(
+          widget.movieURL
+      )..initialize().then((_) {
+        setState(() {});
+        _controller.play();
+      });
+    }
+    else if(widget.playType == PlayType.Local) {
+      getApplicationDocumentsDirectory().then((directory) => {
+        // 動画プレーヤーの初期化
+        _controller = VideoPlayerController.file(
+          File(directory.path + Platform.pathSeparator + 'TestApp'
+              + Platform.pathSeparator + fileName)
+        )..initialize().then((_) {
+          setState(() {});
+          _controller.play();
+        }).whenComplete(() => null)
+      });
+    }
 
     super.initState();
   }
@@ -75,4 +93,8 @@ class _MoviePlayerWidgetState extends State<MoviePlayerWidget> {
     _controller.dispose();
     super.dispose();
   }
+}
+
+enum PlayType {
+  Web, Local
 }

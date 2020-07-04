@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'FileDownload.dart';
 import 'MoviePlayerWidget.dart';
-import 'DownloadMoviePlayerWidget.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,29 +14,48 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.green,
-        //visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
 
-      //home: FirstPage(),  // homeかinitialRoute & routes どちらかのみ
-      home:FirstPage()
+      // homeかinitialRoute & routes どちらかのみ
+      home:MainPage()
     );
   }
 }
+/// メインページ
+class MainPage extends StatelessWidget {
+  // テキストフィールドを管理するコントローラを作成
+  // 入力された内容をこのコントローラを使用して取り出します。
+  var myController = TextEditingController(text: "https://www.home-movie.biz/mov/hts-samp005.mp4");
+  //var myController = TextEditingController();
 
-class FirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('First Page')),
+      appBar: AppBar(title: const Text('メインページ')),
       body: Container(
         alignment: Alignment.center,
-
-        child: Column(
+        margin: EdgeInsets.fromLTRB(50, 20, 50, 10),
+        child:
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            const Text(
+              '''
+              Flutterを練習するためのテストアプリ
+              Hello World！
+              ''',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+
+            TextField(
+                controller: myController
+            ),
+
             // 動画再生画面
             RaisedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
-                  return MoviePlayPage("https://www.home-movie.biz/mov/hts-samp005.mp4");
+                  return MoviePlayPage(myController.text);
                 }));
               },
               child: Text('Web動画再生ページ'),
@@ -46,7 +65,7 @@ class FirstPage extends StatelessWidget {
             RaisedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
-                  return MovieDownloadPage();
+                  return MovieDownloadPage(myController.text);
                 }));
               },
               child: Text('動画ダウンロードページ'),
@@ -56,14 +75,13 @@ class FirstPage extends StatelessWidget {
             RaisedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
-                  return DownloadMoviePlayPage();
+                  return DownloadMoviePlayPage(myController.text);
                 }));
               },
               child: Text('ダウンロード動画再生ページ'),
             ),
           ],
         )
-
       ),
     );
   }
@@ -76,12 +94,12 @@ class MoviePlayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("動画再生"),
+        title: Text("Web動画再生"),
       ),
       body: Center(
           child: Container(
             child: MoviePlayerWidget(
-              movieUrl,
+              PlayType.Web, movieUrl
             ),
           )
       ),
@@ -91,6 +109,8 @@ class MoviePlayPage extends StatelessWidget {
 
 /// 動画ダウンロード画面
 class MovieDownloadPage extends StatelessWidget {
+  final movieUrl;
+  MovieDownloadPage(this.movieUrl);
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +119,7 @@ class MovieDownloadPage extends StatelessWidget {
       ),
       body: Center(
           child: Container(
-            child: DownloadMoviePage(),
+            child: DownloadMoviePage(movieUrl),
           )
       ),
     );
@@ -108,15 +128,20 @@ class MovieDownloadPage extends StatelessWidget {
 
 /// 動画再生画面
 class DownloadMoviePlayPage extends StatelessWidget {
+  final movieUrl;
+  DownloadMoviePlayPage(this.movieUrl);
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("動画再生"),
       ),
       body: Center(
-          child: Container(
-            child: DownloadMoviePlayerWidget(),
-          )
+        child: Container(
+          child: MoviePlayerWidget(
+            PlayType.Local, movieUrl
+          ),
+        )
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,8 +5,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DownloadMoviePage extends StatefulWidget {
-  DownloadMoviePage({Key key, this.title}) : super(key: key);
-  final String title;
+  DownloadMoviePage(this.downloadUrl, {Key key}) : super(key: key);
+  final String downloadUrl;
 
   @override
   _DownloadMoviePageState createState() => _DownloadMoviePageState();
@@ -15,15 +14,13 @@ class DownloadMoviePage extends StatefulWidget {
 
 class _DownloadMoviePageState extends State<DownloadMoviePage> {
   String _localPath;
-  String _contents;
-  int _counter = 0;
 
-  void _incrementCounter() {
+  void fileDownload() {
+    final fileName = widget.downloadUrl.split("/").removeLast();
     setState(() {
-      downloadFile('https://www.home-movie.biz/mov/hts-samp009.mp4',//download url
-          'hts-samp009.mp4',//ファイル名
+      downloadFile(widget.downloadUrl,//download url
+          fileName,//ファイル名
           _localPath);//保存先ディレクトリ
-      _counter++;
       debugPrint(_localPath);
     });
   }
@@ -44,16 +41,14 @@ class _DownloadMoviePageState extends State<DownloadMoviePage> {
   Future<Null> _prepare() async {
     await FlutterDownloader.initialize();
     final directory = await getApplicationDocumentsDirectory();
-    _localPath = directory.path;
+    _localPath = directory.path + Platform.pathSeparator + 'TestApp';
     // ignore: prefer_interpolation_to_compose_strings
 
-//    (await _findLocalPath(context)) + Platform.pathSeparator + 'Download';
-//
-//    final savedDir = Directory(_localPath);
-//    bool hasExisted = await savedDir.exists();
-//    if (!hasExisted) {
-//      await savedDir.create();
-//    }
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      await savedDir.create();
+    }
   }
 
   //Platform.pathSeparatorは Macでいうところの/のPlatform間の違いをなくすもの
@@ -73,25 +68,15 @@ class _DownloadMoviePageState extends State<DownloadMoviePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Hi"),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: fileDownload,
         tooltip: 'Download',
         child: Icon(Icons.file_download),
       ), // This trailing comma makes auto-formatting nicer for build methods.
