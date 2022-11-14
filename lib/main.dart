@@ -52,7 +52,7 @@ class MainPage extends StatelessWidget {
             ),
 
             // 動画再生画面
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
                   return MoviePlayPage(myController.text);
@@ -62,7 +62,7 @@ class MainPage extends StatelessWidget {
             ),
 
             // 動画ダウンロード
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
                   return MovieDownloadPage(myController.text);
@@ -72,7 +72,7 @@ class MainPage extends StatelessWidget {
             ),
 
             // ダウンロード済み動画再生画面
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context){ // push(context, Route)で遷移先を指定
                   return DownloadMoviePlayPage(myController.text);

@@ -61,7 +61,7 @@ class _MoviePlayerWidgetState extends State<MoviePlayerWidget> {
 
     if (_controller == null) return Container();
 
-    if (_controller.value.initialized) {
+    if (_controller.value.isInitialized) {
 
       /*
        * 動画
